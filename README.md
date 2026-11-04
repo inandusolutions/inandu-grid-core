@@ -10,7 +10,8 @@ aggregation, tree-flattening, export helpers and translated messages that
 
 **One core, three interfaces.** A fix to filtering, dates, parsing or export is made once and reaches the three grids
 together; the grids keep only their UI layer, and the query contract they speak with the .NET server is checked
-against one shared fixture.
+against one shared fixture. The [architecture page](https://inandusolutions.github.io/inandu-grid-core/architecture.html)
+says what lives in each layer.
 
 Pure TypeScript, no framework, no DOM except in `downloadBlob`. If you use one of the grids above you
 already get this package; install it directly only to build your own grid or to reuse the helpers.

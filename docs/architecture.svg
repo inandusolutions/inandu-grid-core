@@ -23,7 +23,7 @@
     <rect class="ui" x="50" y="100" width="240" height="96" rx="10"/>
     <text x="170" y="134" text-anchor="middle" class="tFg h m">grid-angular</text>
     <text x="170" y="158" text-anchor="middle" class="tMuted s">component + signals</text>
-    <text x="170" y="178" text-anchor="middle" class="tMuted s">Angular 17+</text>
+    <text x="170" y="178" text-anchor="middle" class="tMuted s">Angular 21+</text>
 
     <rect class="ui" x="330" y="100" width="240" height="96" rx="10"/>
     <text x="450" y="134" text-anchor="middle" class="tFg h m">grid-react</text>
@@ -35,7 +35,6 @@
     <text x="730" y="158" text-anchor="middle" class="tMuted s">component + composables</text>
     <text x="730" y="178" text-anchor="middle" class="tMuted s">Vue 3</text>
   </g>
-  <text x="26" y="153" transform="rotate(-90 26 153)" text-anchor="middle" class="tMuted s h">UI</text>
 
   <!-- arrows -->
   <path class="arrow" d="M170 196 V246"/><path class="arrow" d="M450 196 V246"/><path class="arrow" d="M730 196 V246"/>
@@ -44,7 +43,7 @@
   <!-- core -->
   <rect class="core" x="50" y="250" width="800" height="168" rx="12"/>
   <text x="450" y="282" text-anchor="middle" class="tCore h m">@inandu-solutions/grid-core</text>
-  <text x="450" y="302" text-anchor="middle" class="tCore s">pure TypeScript · no framework · no DOM · tested in every time zone</text>
+  <text x="450" y="302" text-anchor="middle" class="tCore s">pure TypeScript · no framework · no DOM · tested across time zones</text>
   <g class="s">
     <rect class="chip" x="74"  y="322" width="168" height="34" rx="17"/><text x="158" y="344" text-anchor="middle" class="tChip">filter · sort</text>
     <rect class="chip" x="254" y="322" width="168" height="34" rx="17"/><text x="338" y="344" text-anchor="middle" class="tChip">dates · formatting</text>
