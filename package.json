@@ -1,0 +1,70 @@
+{
+  "name": "@inandu-solutions/grid-core",
+  "version": "0.1.0",
+  "description": "Framework-agnostic core of the Inandu data grid: sorting, filtering, parsing, formatting, aggregates, tree flattening, CSV/Excel/PDF export helpers and i18n messages. The shared engine behind @inandu-solutions/grid-angular, grid-react and grid-vue.",
+  "keywords": [
+    "data-grid",
+    "datagrid",
+    "grid",
+    "table",
+    "sorting",
+    "filtering",
+    "csv-export",
+    "excel-export",
+    "pdf-export",
+    "i18n",
+    "framework-agnostic"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Inandu SAS",
+    "url": "https://www.inandu.com/"
+  },
+  "homepage": "https://github.com/inandusolutions/inandu-grid-core#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inandusolutions/inandu-grid-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/inandusolutions/inandu-grid-core/issues"
+  },
+  "type": "module",
+  "main": "./dist/inandu-grid-core.cjs",
+  "module": "./dist/inandu-grid-core.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/inandu-grid-core.js",
+      "require": "./dist/inandu-grid-core.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0 || >=24.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "jspdf": "^4.2.1"
+  },
+  "devDependencies": {
+    "@typescript/typescript6": "^6.0.2",
+    "jsdom": "^30.1.3",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.5",
+    "vite-plugin-dts": "^5.1.2",
+    "vitest": "^5.0.5"
+  }
+}
