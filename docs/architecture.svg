@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="t d" font-family="system-ui,-apple-system,'Segoe UI',sans-serif">
+  <title id="t">One core, three interfaces</title>
+  <desc id="d">Angular, React and Vue grids sit on top of one shared package, @inandu-solutions/grid-core, which holds filtering, sorting, dates, aggregates, export, parsing and i18n. Below it, the same query contract is shared with Inandu.Grid.Extensions on .NET.</desc>
+  <style>
+    :root { --bg:#ffffff; --fg:#1b1f24; --muted:#59636e; --line:#c9d1d9; --card:#f6f8fa; --core:#0b57d0; --coreText:#ffffff; --chip:#e8f0fe; --chipText:#0b3d91; --contract:#0f7b4f; --contractBg:#e6f4ec; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#0e1116; --fg:#e6edf3; --muted:#9aa4af; --line:#30363d; --card:#161b22; --core:#2f6feb; --coreText:#ffffff; --chip:#1c2a4a; --chipText:#c7dbff; --contract:#3fb97f; --contractBg:#12261c; } }
+    .bg { fill: var(--bg); }
+    .ui { fill: var(--card); stroke: var(--line); stroke-width: 1.5; }
+    .core { fill: var(--core); }
+    .chip { fill: var(--chip); }
+    .contract { fill: var(--contractBg); stroke: var(--contract); stroke-width: 1.5; }
+    .arrow { stroke: var(--muted); stroke-width: 2; fill: none; }
+    .tFg { fill: var(--fg); } .tMuted { fill: var(--muted); } .tCore { fill: var(--coreText); } .tChip { fill: var(--chipText); } .tContract { fill: var(--contract); }
+    .h { font-weight: 700; } .s { font-size: 13px; } .m { font-size: 15px; } .l { font-size: 22px; }
+  </style>
+  <rect class="bg" width="900" height="560" rx="14"/>
+
+  <text x="450" y="46" text-anchor="middle" class="tFg h l">One core. Three interfaces.</text>
+  <text x="450" y="70" text-anchor="middle" class="tMuted s">The behaviour is written, tested and fixed once. Only the UI layer changes with the framework.</text>
+
+  <!-- UI layer -->
+  <g>
+    <rect class="ui" x="50" y="100" width="240" height="96" rx="10"/>
+    <text x="170" y="134" text-anchor="middle" class="tFg h m">grid-angular</text>
+    <text x="170" y="158" text-anchor="middle" class="tMuted s">component + signals</text>
+    <text x="170" y="178" text-anchor="middle" class="tMuted s">Angular 21+</text>
+
+    <rect class="ui" x="330" y="100" width="240" height="96" rx="10"/>
+    <text x="450" y="134" text-anchor="middle" class="tFg h m">grid-react</text>
+    <text x="450" y="158" text-anchor="middle" class="tMuted s">component + hooks</text>
+    <text x="450" y="178" text-anchor="middle" class="tMuted s">React 18 / 19</text>
+
+    <rect class="ui" x="610" y="100" width="240" height="96" rx="10"/>
+    <text x="730" y="134" text-anchor="middle" class="tFg h m">grid-vue</text>
+    <text x="730" y="158" text-anchor="middle" class="tMuted s">component + composables</text>
+    <text x="730" y="178" text-anchor="middle" class="tMuted s">Vue 3</text>
+  </g>
+
+  <!-- arrows -->
+  <path class="arrow" d="M170 196 V246"/><path class="arrow" d="M450 196 V246"/><path class="arrow" d="M730 196 V246"/>
+  <path class="arrow" d="M170 246 l-5 -9 M170 246 l5 -9 M450 246 l-5 -9 M450 246 l5 -9 M730 246 l-5 -9 M730 246 l5 -9"/>
+
+  <!-- core -->
+  <rect class="core" x="50" y="250" width="800" height="168" rx="12"/>
+  <text x="450" y="282" text-anchor="middle" class="tCore h m">@inandu-solutions/grid-core</text>
+  <text x="450" y="302" text-anchor="middle" class="tCore s">pure TypeScript · no framework · no DOM · tested across time zones</text>
+  <g class="s">
+    <rect class="chip" x="74"  y="322" width="168" height="34" rx="17"/><text x="158" y="344" text-anchor="middle" class="tChip">filter · sort</text>
+    <rect class="chip" x="254" y="322" width="168" height="34" rx="17"/><text x="338" y="344" text-anchor="middle" class="tChip">dates · formatting</text>
+    <rect class="chip" x="434" y="322" width="168" height="34" rx="17"/><text x="518" y="344" text-anchor="middle" class="tChip">aggregates · trees</text>
+    <rect class="chip" x="614" y="322" width="212" height="34" rx="17"/><text x="720" y="344" text-anchor="middle" class="tChip">CSV · Excel · PDF export</text>
+    <rect class="chip" x="74"  y="366" width="168" height="34" rx="17"/><text x="158" y="388" text-anchor="middle" class="tChip">paste · parsing</text>
+    <rect class="chip" x="254" y="366" width="168" height="34" rx="17"/><text x="338" y="388" text-anchor="middle" class="tChip">i18n · 5 languages</text>
+    <rect class="chip" x="434" y="366" width="392" height="34" rx="17"/><text x="630" y="388" text-anchor="middle" class="tChip">CSV formula neutralization · XML-safe output</text>
+  </g>
+
+  <!-- contract -->
+  <path class="arrow" d="M450 418 V458"/><path class="arrow" d="M450 458 l-5 -9 M450 458 l5 -9"/>
+  <rect class="contract" x="50" y="462" width="800" height="72" rx="12"/>
+  <text x="450" y="490" text-anchor="middle" class="tContract h m">Inandu.Grid.Extensions (.NET)</text>
+  <text x="450" y="512" text-anchor="middle" class="tMuted s">the same query contract, checked against one shared fixture on the client and on the server</text>
+</svg>

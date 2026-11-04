@@ -6,6 +6,11 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Documentation
+
+- An architecture figure (`docs/architecture.svg`) in the README and on the Pages site: one core under the Angular,
+  React and Vue grids, and the contract shared with Inandu.Grid.Extensions.
+
 ## [0.1.0] - Unreleased
 
 First release. The code is the `core/` that `@inandu-solutions/grid-angular`, `grid-react` and `grid-vue` each

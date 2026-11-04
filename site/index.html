@@ -27,11 +27,24 @@
   <h1>@inandu-solutions/grid-core</h1>
   <p class="lead">The framework-agnostic core of the Inandu data grid. Pure TypeScript: sorting, filtering, parsing, formatting, aggregation, tree flattening, export helpers and translated messages.</p>
   <nav>
+    <a href="architecture.html">Architecture</a>
     <a href="https://github.com/inandusolutions/inandu-grid-core">GitHub</a>
     <a href="https://www.npmjs.com/package/@inandu-solutions/grid-core">npm</a>
     <a href="https://github.com/inandusolutions/inandu-grid-core/blob/main/CHANGELOG.md">Changelog</a>
     <a href="https://github.com/inandusolutions/inandu-grid-core/discussions">Discussions</a>
   </nav>
+
+  <figure style="margin:1.6rem 0 0">
+    <img src="architecture.svg" alt="Angular, React and Vue grids on top of one shared core package, which shares its query contract with Inandu.Grid.Extensions on .NET" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--line)">
+  </figure>
+
+  <h2>Why one core</h2>
+  <ul>
+    <li><strong>A fix is made once.</strong> Filtering, sorting, dates, parsing and export are not copied into each framework, so they cannot drift apart.</li>
+    <li><strong>Parity is checkable.</strong> The same inputs produce the same outputs in Angular, React and Vue because they run the same code, tested here in several time zones.</li>
+    <li><strong>The server speaks the same contract.</strong> The query the grids send and what <a href="https://github.com/inandusolutions/inandu-grid-extensions">Inandu.Grid.Extensions</a> accepts are checked against one shared fixture.</li>
+    <li><strong>Only the UI is framework code.</strong> Each grid keeps its component, its hooks or signals, and its rendering; nothing else.</li>
+  </ul>
 
   <h2>Install</h2>
   <pre>npm install @inandu-solutions/grid-core</pre>
