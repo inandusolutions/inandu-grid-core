@@ -37,7 +37,7 @@ export type { TreeVisibleRow, FlattenTreeOptions } from './tree';
 export { hasMeaningfulFilterValue, matchesColumnFilter } from './filter';
 export { AGGREGATE_SYMBOLS, computeGroupAggregates } from './aggregate';
 export { placeColumnsByOrder } from './columns';
-export { parseDraftValue, parsePastedCellValue } from './parse';
+export { parseDraftValue, parsePastedCell, parsePastedCellValue } from './parse';
 export { escapeAttributeSelectorValue } from './dom';
 
 export { escapeCsvValue, neutralizeCsvFormula } from './export/csv';

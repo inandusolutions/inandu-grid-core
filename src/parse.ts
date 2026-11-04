@@ -46,3 +46,13 @@ export function parsePastedCellValue(raw: string, type: InanduColumnType): unkno
   }
   return parseDraftValue(raw, type);
 }
+
+/**
+ * A pasted cell ready to apply, or `undefined` when it should be skipped. `parsePastedCellValue` answers `undefined`
+ * for text a column cannot hold (a blank or invalid number or date); applying that as an update would clear the
+ * cell, which a paste never meant to do. Callers push `{ row, field, value }` only when this returns a result.
+ */
+export function parsePastedCell(raw: string, type: InanduColumnType): { value: unknown } | undefined {
+  const value = parsePastedCellValue(raw, type);
+  return value === undefined ? undefined : { value };
+}
