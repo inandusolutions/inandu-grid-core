@@ -18,11 +18,13 @@ export function defaultNumberFormatter(value: number, locale: string, digitsInfo
   const options: Intl.NumberFormatOptions = {};
   const match = digitsInfo ? DIGITS_INFO_PATTERN.exec(digitsInfo) : null;
   if (match) {
+    // Intl throws a RangeError for min > max or a count past its limits, so clamp what a bad digitsInfo asks for.
     if (match[1]) {
-      options.minimumIntegerDigits = Number(match[1]);
+      options.minimumIntegerDigits = Math.min(21, Math.max(1, Number(match[1])));
     }
-    options.minimumFractionDigits = Number(match[2]);
-    options.maximumFractionDigits = Number(match[3]);
+    const minFraction = Math.min(100, Number(match[2]));
+    options.minimumFractionDigits = minFraction;
+    options.maximumFractionDigits = Math.max(minFraction, Math.min(100, Number(match[3])));
   } else {
     options.maximumFractionDigits = 3;
   }
@@ -94,7 +96,8 @@ export function formatCellValue(
       return Number.isNaN(date.getTime()) ? String(value) : formatDateValue(date, format || 'YYYY-MM-DD');
     }
     case 'boolean': {
-      const [truthyLabel, falsyLabel] = (format || 'true|false').split('|');
+      // `format` is "truthy|falsy". A format without a `|` ("Yes") labels only the truthy side; the falsy side is empty.
+      const [truthyLabel, falsyLabel = ''] = (format || 'true|false').split('|');
       return value ? truthyLabel : falsyLabel;
     }
     default:

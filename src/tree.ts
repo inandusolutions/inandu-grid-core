@@ -32,29 +32,41 @@ export function flattenTree<T>(roots: readonly T[], options: FlattenTreeOptions<
 
   // memoise the "self-or-descendant matches" test — a wide/deep tree would otherwise re-walk a lot
   const keepCache = new Map<T, boolean>();
+  // Data with a cycle (a node that is its own descendant) must not recurse forever: a node already on the current
+  // path is not walked again, here or below.
+  const matching = new Set<T>();
   const keep = (row: T): boolean => {
     if (!match) return true;
     const cached = keepCache.get(row);
     if (cached !== undefined) return cached;
+    if (matching.has(row)) return false;
+    matching.add(row);
     let result = match(row);
     if (!result) {
       const kids = getChildren(row);
       result = !!kids && kids.some(keep);
     }
+    matching.delete(row);
     keepCache.set(row, result);
     return result;
   };
 
+  const path = new Set<T>();
   const walk = (level: readonly T[], depth: number): void => {
     let rows = match ? level.filter(keep) : [...level];
+    rows = rows.filter(row => !path.has(row));
     if (compare) rows = rows.slice().sort(compare);
     for (const row of rows) {
-      const rawChildren = getChildren(row);
+      const rawChildren = getChildren(row)?.filter(child => child !== row && !path.has(child));
       const keptChildren = rawChildren ? (match ? rawChildren.filter(keep) : rawChildren) : [];
       const expandable = keptChildren.length > 0;
       const expanded = expandable && (match ? true : isExpanded(row));
       out.push({ row, depth, expandable, expanded });
-      if (expanded) walk(rawChildren!, depth + 1);
+      if (expanded) {
+        path.add(row);
+        walk(rawChildren!, depth + 1);
+        path.delete(row);
+      }
     }
   };
 
@@ -68,8 +80,11 @@ export function collectTreeRows<T>(
   getChildren: (row: T) => readonly T[] | undefined,
 ): T[] {
   const out: T[] = [];
+  const seen = new Set<T>(); // a cycle must not recurse forever, and a shared node is listed once
   const walk = (level: readonly T[]): void => {
     for (const row of level) {
+      if (seen.has(row)) continue;
+      seen.add(row);
       out.push(row);
       const kids = getChildren(row);
       if (kids && kids.length) walk(kids);
