@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    groups:
+      # vitest, vite-plugin-dts and the build peer-depend on vite.
+      vite:
+        patterns:
+          - vite
+          - vitest
+          - vite-plugin-dts
+      dev-minor-patch:
+        dependency-type: development
+        exclude-patterns:
+          - vite
+          - vitest
+          - vite-plugin-dts
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
