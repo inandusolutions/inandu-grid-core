@@ -56,21 +56,117 @@ export function coerceToDate(value: unknown): Date {
   return new Date(value as number);
 }
 
-// Field names from the ECMA-262 Date Time String Format (case-sensitive: MM = month, mm = minutes).
-// 'sss' must be tried before 'ss' or the alternation would match the 'ss' prefix first.
-const DATE_TOKEN_PATTERN = /YYYY|sss|MM|DD|HH|mm|ss/g;
+// Field names from the ECMA-262 Date Time String Format (case-sensitive: MM = month, mm = minutes), plus MMM/MMMM for
+// the month name and `[text]` for literal text. Longer tokens come first so that 'sss' is not read as 'ss' + 's'
+// and 'MMMM' as 'MM' + 'MM'.
+const DATE_TOKEN_PATTERN = /\[([^\]]*)\]|YYYY|sss|MMMM|MMM|MM|DD|HH|mm|ss/g;
 
-export function formatDateValue(date: Date, format: string): string {
+/** Where the wall-clock parts of an instant are read: the browser's zone (default), `'utc'`, or an IANA name such as `'America/Bogota'`. */
+export type InanduTimeZone = 'local' | 'utc' | (string & {});
+
+export interface DateFormatOptions {
+  /** Locale for `MMM`/`MMMM`. */
+  locale?: string;
+  /** Zone the date is shown in; an unknown name falls back to the browser's zone. */
+  timeZone?: string;
+}
+
+export interface DateParts {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+  ms: number;
+}
+
+const zoneFormatters = new Map<string, Intl.DateTimeFormat | null>();
+
+function zoneFormatter(timeZone: string): Intl.DateTimeFormat | null {
+  let formatter = zoneFormatters.get(timeZone);
+  if (formatter === undefined) {
+    try {
+      formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone,
+        hourCycle: 'h23',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+      });
+    } catch {
+      formatter = null; // RangeError: not a time zone
+    }
+    zoneFormatters.set(timeZone, formatter);
+  }
+  return formatter;
+}
+
+/** The year, month, day and time of `date` as a wall clock in `timeZone` (`'local'`/empty = the browser's). */
+export function zonedDateParts(date: Date, timeZone?: string): DateParts {
+  const zone = timeZone?.trim();
+  if (zone && zone.toLowerCase() === 'utc') {
+    return {
+      year: date.getUTCFullYear(),
+      month: date.getUTCMonth() + 1,
+      day: date.getUTCDate(),
+      hour: date.getUTCHours(),
+      minute: date.getUTCMinutes(),
+      second: date.getUTCSeconds(),
+      ms: date.getUTCMilliseconds(),
+    };
+  }
+  const formatter = zone && zone.toLowerCase() !== 'local' ? zoneFormatter(zone) : null;
+  if (formatter) {
+    const parts = formatter.formatToParts(date);
+    const pick = (type: string) => Number(parts.find(p => p.type === type)?.value);
+    return {
+      year: pick('year'),
+      month: pick('month'),
+      day: pick('day'),
+      hour: pick('hour') % 24,
+      minute: pick('minute'),
+      second: pick('second'),
+      ms: date.getUTCMilliseconds(),
+    };
+  }
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+    day: date.getDate(),
+    hour: date.getHours(),
+    minute: date.getMinutes(),
+    second: date.getSeconds(),
+    ms: date.getMilliseconds(),
+  };
+}
+
+function monthName(month: number, style: 'short' | 'long', locale: string | undefined): string {
+  try {
+    return new Intl.DateTimeFormat(locale || undefined, { month: style, timeZone: 'UTC' }).format(new Date(Date.UTC(2000, month - 1, 1)));
+  } catch {
+    return String(month).padStart(2, '0');
+  }
+}
+
+export function formatDateValue(date: Date, format: string, options: DateFormatOptions = {}): string {
   const pad = (n: number, len = 2) => String(n).padStart(len, '0');
-  return format.replace(DATE_TOKEN_PATTERN, token => {
+  const parts = zonedDateParts(date, options.timeZone);
+  return format.replace(DATE_TOKEN_PATTERN, (token, literal?: string) => {
+    if (token.startsWith('[')) return literal ?? '';
     switch (token) {
-      case 'YYYY': return String(date.getFullYear());
-      case 'MM': return pad(date.getMonth() + 1);
-      case 'DD': return pad(date.getDate());
-      case 'HH': return pad(date.getHours());
-      case 'mm': return pad(date.getMinutes());
-      case 'ss': return pad(date.getSeconds());
-      case 'sss': return pad(date.getMilliseconds(), 3);
+      case 'YYYY': return pad(parts.year, 4);
+      case 'MMMM': return monthName(parts.month, 'long', options.locale);
+      case 'MMM': return monthName(parts.month, 'short', options.locale);
+      case 'MM': return pad(parts.month);
+      case 'DD': return pad(parts.day);
+      case 'HH': return pad(parts.hour);
+      case 'mm': return pad(parts.minute);
+      case 'ss': return pad(parts.second);
+      case 'sss': return pad(parts.ms, 3);
       default: return token;
     }
   });
@@ -82,18 +178,23 @@ export function formatCellValue(
   format: string,
   locale: string,
   numberFormatter: NumberFormatter = defaultNumberFormatter,
+  timeZone?: string,
 ): string {
   if (value === null || value === undefined) {
     return '';
   }
   switch (type) {
     case 'number': {
+      // A blank is not a zero and a boolean is not a one: `Number('')` and `Number(true)` would show them as such.
+      if (typeof value === 'boolean' || (typeof value === 'string' && value.trim() === '')) {
+        return String(value).trim();
+      }
       const num = typeof value === 'number' ? value : Number(value);
       return Number.isNaN(num) ? String(value) : numberFormatter(num, locale, format || undefined);
     }
     case 'date': {
       const date = coerceToDate(value);
-      return Number.isNaN(date.getTime()) ? String(value) : formatDateValue(date, format || 'YYYY-MM-DD');
+      return Number.isNaN(date.getTime()) ? String(value) : formatDateValue(date, format || 'YYYY-MM-DD', { locale, timeZone });
     }
     case 'boolean': {
       // `format` is "truthy|falsy". A format without a `|` ("Yes") labels only the truthy side; the falsy side is empty.

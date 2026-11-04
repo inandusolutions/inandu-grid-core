@@ -6,6 +6,37 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-11-04
+
+Everything is additive: a caller that passes nothing new gets the same results as before, except where a result was wrong.
+
+### Fixed
+
+- **Pasting is strict.** `parsePastedCellValue` / `parsePastedCell` no longer read `Infinity` as a value (it used to clear the
+  cell), `0x10` as 16, or a blank as `0`; a boolean that is not in the dictionary is skipped instead of becoming `false`
+  (`'1'`, `'yes'`, `'sí'` now read as `true`).
+- A numeric column shows an empty or blank cell as empty and a boolean as itself, not `0` / `1`; such cells no longer match a
+  numeric range.
+- A filter bound of `0` (`min`, `max`, `from`, `to`) is a bound. `hasMeaningfulFilterValue` counts `0` as entered.
+- `formatDateValue`: `YYYY` pads years under 1000 to four digits.
+
+### Added
+
+- `InanduPasteOptions` (`locale`, `booleanLabels`) as the third argument of `parsePastedCell` / `parsePastedCellValue`. With a
+  locale, `1.234,56` reads in `es` and `1,234.56` in `en`, and `05/01/2024` reads as 5 January in `es` and 1 May in
+  `en-US`; without one a numeric non-ISO date is refused as ambiguous. New helpers `parseLocaleNumber`, `parsePastedDate`,
+  `parsePastedBoolean`.
+- `compareCellValues(a, b, { locale, type })`: with the column type, text that stands for a number or a date is compared as
+  one (`'9'` before `'10'`). The old `compareCellValues(a, b, locale)` form still works. Text is compared with a cached
+  `Intl.Collator`.
+- **`timeZone`** (`'local'` default, `'utc'`, or an IANA name) on `ColumnConfig` (optional `timeZone()`), on
+  `formatDateValue(date, format, { locale, timeZone })` and as the last argument of `formatCellValue`. A column filter on a
+  date compares the calendar day the column shows. `zonedDateParts` is exported.
+- `formatDateValue` tokens `MMM` / `MMMM` (month name through `Intl`, in the locale) and `[text]` for literal text, so
+  `DD [de] MMMM [de] YYYY` gives `05 de enero de 2024` instead of `05 de 0101 de 2024`.
+- `invalidFilterBounds(column, filterValue)`: the `min`/`max`/`from`/`to` keys that are not a number or a date. They are
+  still ignored when filtering (as the server does); this lets a grid say so.
+
 ## [0.1.1] - 2026-11-04
 
 ### Documentation

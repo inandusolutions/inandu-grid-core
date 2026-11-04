@@ -28,16 +28,26 @@ export {
   formatDateValue,
   formatCellValue,
   defaultNumberFormatter,
+  zonedDateParts,
 } from './format';
-export type { NumberFormatter } from './format';
+export type { NumberFormatter, InanduTimeZone, DateFormatOptions, DateParts } from './format';
 
 export { compareCellValues } from './sort';
+export type { CompareCellOptions } from './sort';
 export { flattenTree, collectTreeRows } from './tree';
 export type { TreeVisibleRow, FlattenTreeOptions } from './tree';
-export { hasMeaningfulFilterValue, matchesColumnFilter } from './filter';
+export { hasMeaningfulFilterValue, matchesColumnFilter, invalidFilterBounds } from './filter';
 export { AGGREGATE_SYMBOLS, computeGroupAggregates } from './aggregate';
 export { placeColumnsByOrder } from './columns';
-export { parseDraftValue, parsePastedCell, parsePastedCellValue } from './parse';
+export {
+  parseDraftValue,
+  parsePastedCell,
+  parsePastedCellValue,
+  parseLocaleNumber,
+  parsePastedDate,
+  parsePastedBoolean,
+} from './parse';
+export type { InanduPasteOptions } from './parse';
 export { escapeAttributeSelectorValue } from './dom';
 
 export { escapeCsvValue, neutralizeCsvFormula } from './export/csv';

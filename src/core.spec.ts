@@ -126,10 +126,11 @@ describe('pure: parseDraftValue', () => {
 });
 
 describe('pure: parsePastedCellValue', () => {
-  it('boolean: only the literal "true" (case-insensitive, trimmed) is true', () => {
+  it('boolean: read through a dictionary (case-insensitive, trimmed)', () => {
     expect(parsePastedCellValue(' TRUE ', 'boolean')).toBe(true);
     expect(parsePastedCellValue('false', 'boolean')).toBe(false);
-    expect(parsePastedCellValue('1', 'boolean')).toBe(false);
+    expect(parsePastedCellValue('1', 'boolean')).toBe(true);
+    expect(parsePastedCellValue('maybe', 'boolean')).toBeUndefined(); // skipped, not turned into false
   });
   it('delegates to parseDraftValue for other types', () => {
     expect(parsePastedCellValue('7', 'number')).toBe(7);

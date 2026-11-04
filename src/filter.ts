@@ -1,5 +1,5 @@
 import { ColumnConfig, InanduGridColumnFilterValue, InanduGridRow } from './types';
-import { coerceToDate, formatCellValue, NumberFormatter } from './format';
+import { coerceToDate, formatCellValue, NumberFormatter, zonedDateParts } from './format';
 
 /**
  * Whether `value` has at least one non-empty key — an entry can exist (e.g. after typing then
@@ -10,8 +10,29 @@ import { coerceToDate, formatCellValue, NumberFormatter } from './format';
  */
 export function hasMeaningfulFilterValue(value: InanduGridColumnFilterValue | undefined): boolean {
   if (!value) return false;
-  return Object.values(value).some(v => (Array.isArray(v) ? true : !!v));
+  return Object.values(value).some(v => (Array.isArray(v) ? true : isSet(v)));
 }
+
+/** A bound or a text is entered when it is anything but absent or blank: `0` and `'0'` count, `''`, `null` and `undefined` do not. */
+function isSet(value: unknown): boolean {
+  return value !== undefined && value !== null && value !== '' && value !== false;
+}
+
+/**
+ * The filter keys that hold something the column cannot use: a `min`/`max` that is not a number or a `from`/`to` that is
+ * not a date. Such a bound is ignored by `matchesColumnFilter` (the server ignores it too), which is silent; a grid can
+ * call this to tell the user instead.
+ */
+export function invalidFilterBounds(column: ColumnConfig, filterValue: InanduGridColumnFilterValue): string[] {
+  const keys = column.type() === 'number' ? (['min', 'max'] as const) : column.type() === 'date' ? (['from', 'to'] as const) : [];
+  return keys.filter(key => {
+    const bound = filterValue[key];
+    if (!isSet(bound)) return false;
+    return column.type() === 'number' ? !Number.isFinite(Number(bound)) : Number.isNaN(coerceToDate(bound).getTime());
+  });
+}
+
+const DAY = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 /**
  * Whether `row` satisfies `column`'s own filter control. An empty/absent `filterValue` (no
@@ -36,18 +57,20 @@ export function matchesColumnFilter(
   numberFormatter?: NumberFormatter,
 ): boolean {
   const raw = row[column.field()];
+  const timeZone = column.timeZone?.();
   if (filterValue.values !== undefined) {
-    return filterValue.values.includes(formatCellValue(raw, column.type(), column.format(), locale, numberFormatter));
+    return filterValue.values.includes(formatCellValue(raw, column.type(), column.format(), locale, numberFormatter, timeZone));
   }
   switch (column.type()) {
     case 'number': {
-      const hasMin = !!filterValue.min;
-      const hasMax = !!filterValue.max;
+      const hasMin = isSet(filterValue.min);
+      const hasMax = isSet(filterValue.max);
       if (!hasMin && !hasMax) {
         return true;
       }
       const num = typeof raw === 'number' ? raw : Number(raw);
-      if (raw == null || Number.isNaN(num)) {
+      // A blank or a boolean is not a number (`Number('')` is 0, `Number(true)` is 1).
+      if (raw == null || typeof raw === 'boolean' || (typeof raw === 'string' && raw.trim() === '') || Number.isNaN(num)) {
         return false;
       }
       if (hasMin && num < Number(filterValue.min)) return false;
@@ -55,8 +78,8 @@ export function matchesColumnFilter(
       return true;
     }
     case 'date': {
-      const hasFrom = !!filterValue.from;
-      const hasTo = !!filterValue.to;
+      const hasFrom = isSet(filterValue.from);
+      const hasTo = isSet(filterValue.to);
       if (!hasFrom && !hasTo) {
         return true;
       }
@@ -66,6 +89,21 @@ export function matchesColumnFilter(
       const date = coerceToDate(raw);
       if (Number.isNaN(date.getTime())) {
         return false;
+      }
+      if (timeZone) {
+        // A column shown in a zone filters by the calendar day it shows there: compare `yyyy-mm-dd` with `yyyy-mm-dd`.
+        const parts = zonedDateParts(date, timeZone);
+        const pad = (n: number, len = 2) => String(n).padStart(len, '0');
+        const day = `${pad(parts.year, 4)}-${pad(parts.month)}-${pad(parts.day)}`;
+        const dayOf = (bound: string | undefined) => {
+          const text = String(bound);
+          if (DAY.test(text)) return text;
+          const d = coerceToDate(text);
+          return `${pad(d.getFullYear(), 4)}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+        };
+        if (hasFrom && day < dayOf(filterValue.from)) return false;
+        if (hasTo && day > dayOf(filterValue.to)) return false;
+        return true;
       }
       // Both bounds go through coerceToDate, so a bare yyyy-mm-dd means that calendar day in local time on both sides of
       // the comparison (the cell and the bound), whatever the time zone.
@@ -88,7 +126,7 @@ export function matchesColumnFilter(
       if (!text) {
         return true;
       }
-      return formatCellValue(raw, column.type(), column.format(), locale, numberFormatter).toLowerCase().includes(text);
+      return formatCellValue(raw, column.type(), column.format(), locale, numberFormatter, timeZone).toLowerCase().includes(text);
     }
   }
 }
