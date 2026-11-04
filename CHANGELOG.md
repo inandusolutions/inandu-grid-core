@@ -6,12 +6,14 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-04
+
 ### Documentation
 
 - An architecture figure (`docs/architecture.svg`) in the README and on the Pages site: one core under the Angular,
   React and Vue grids, and the contract shared with Inandu.Grid.Extensions.
 
-## [0.1.0] - Unreleased
+## [0.1.0] - 2026-11-04
 
 First release. The code is the `core/` that `@inandu-solutions/grid-angular`, `grid-react` and `grid-vue` each
 carried a copy of, now in one package, with these fixes applied on the way in.
@@ -41,4 +43,6 @@ carried a copy of, now in one package, with these fixes applied on the way in.
   invalid number or date), so a paste does not clear a cell.
 - `neutralizeCsvFormula` and the `CsvEscapeOptions` type.
 
-[Unreleased]: https://github.com/inandusolutions/inandu-grid-core/commits/main
+[Unreleased]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/inandusolutions/inandu-grid-core/releases/tag/v0.1.0
