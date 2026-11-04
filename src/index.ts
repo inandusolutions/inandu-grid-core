@@ -40,7 +40,8 @@ export { placeColumnsByOrder } from './columns';
 export { parseDraftValue, parsePastedCellValue } from './parse';
 export { escapeAttributeSelectorValue } from './dom';
 
-export { escapeCsvValue } from './export/csv';
+export { escapeCsvValue, neutralizeCsvFormula } from './export/csv';
+export type { CsvEscapeOptions } from './export/csv';
 export { escapeMarkup } from './export/markup';
 export { truncatePdfText } from './export/pdf';
 export { downloadBlob } from './export/download';
