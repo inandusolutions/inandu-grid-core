@@ -42,6 +42,13 @@ export function coerceToDate(value: unknown): Date {
     return value;
   }
   if (typeof value === 'string') {
+    // A bare `yyyy-mm-dd` is a calendar date. `new Date('2025-06-15')` reads it as UTC midnight, which west of UTC is
+    // the evening of the 14th in local time (and the formatter and the filter both work in local time), so build it
+    // as local midnight, the way a `type="date"` input means it.
+    const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (dateOnly) {
+      return new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]));
+    }
     return new Date(value.replace(/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})/, '$1T$2'));
   }
   return new Date(value as number);

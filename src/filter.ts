@@ -67,9 +67,11 @@ export function matchesColumnFilter(
       if (Number.isNaN(date.getTime())) {
         return false;
       }
-      if (hasFrom && date < new Date(filterValue.from!)) return false;
+      // Both bounds go through coerceToDate, so a bare yyyy-mm-dd means that calendar day in local time on both sides of
+      // the comparison (the cell and the bound), whatever the time zone.
+      if (hasFrom && date < coerceToDate(filterValue.from)) return false;
       if (hasTo) {
-        const to = new Date(filterValue.to!);
+        const to = new Date(coerceToDate(filterValue.to));
         to.setHours(23, 59, 59, 999);
         if (date > to) return false;
       }
