@@ -6,6 +6,12 @@ aggregation, tree-flattening, export helpers and translated messages that
 [`@inandu-solutions/grid-react`](https://github.com/inandusolutions/inandu-grid-react) and
 [`@inandu-solutions/grid-vue`](https://github.com/inandusolutions/inandu-grid-vue) share.
 
+<p align="center"><img src="docs/architecture.svg" alt="Angular, React and Vue grids on top of one shared core package, which shares its query contract with Inandu.Grid.Extensions on .NET" width="820"></p>
+
+**One core, three interfaces.** A fix to filtering, dates, parsing or export is made once and reaches the three grids
+together; the grids keep only their UI layer, and the query contract they speak with the .NET server is checked
+against one shared fixture.
+
 Pure TypeScript, no framework, no DOM except in `downloadBlob`. If you use one of the grids above you
 already get this package; install it directly only to build your own grid or to reuse the helpers.
 
