@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@inandu-solutions/grid-core</title>
+<meta name="description" content="The framework-agnostic core of the Inandu data grid: filtering, parsing, formatting, aggregation and export helpers.">
+<style>
+  :root { --bg:#fff; --fg:#1b1f24; --muted:#59636e; --line:#d8dee4; --card:#f6f8fa; --accent:#0b57d0; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0e1116; --fg:#e6edf3; --muted:#9aa4af; --line:#30363d; --card:#161b22; --accent:#6ea8fe; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { max-width:820px; margin:0 auto; padding:48px 16px 64px; }
+  h1 { font-size:1.9rem; margin:0 0 .25rem; } h2 { font-size:1.25rem; margin:2.2rem 0 .6rem; }
+  p.lead { color:var(--muted); margin:.25rem 0 1.2rem; font-size:1.05rem; }
+  a { color:var(--accent); }
+  pre, code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9em; }
+  pre { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; } th,td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; font-size:.85rem; }
+  nav a { margin-right:14px; }
+  ul { padding-left:1.2rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>@inandu-solutions/grid-core</h1>
+  <p class="lead">The framework-agnostic core of the Inandu data grid. Pure TypeScript: sorting, filtering, parsing, formatting, aggregation, tree flattening, export helpers and translated messages.</p>
+  <nav>
+    <a href="https://github.com/inandusolutions/inandu-grid-core">GitHub</a>
+    <a href="https://www.npmjs.com/package/@inandu-solutions/grid-core">npm</a>
+    <a href="https://github.com/inandusolutions/inandu-grid-core/blob/main/CHANGELOG.md">Changelog</a>
+    <a href="https://github.com/inandusolutions/inandu-grid-core/discussions">Discussions</a>
+  </nav>
+
+  <h2>Install</h2>
+  <pre>npm install @inandu-solutions/grid-core</pre>
+  <p>If you use <a href="https://github.com/inandusolutions/inandu-grid">grid-angular</a>,
+  <a href="https://github.com/inandusolutions/inandu-grid-react">grid-react</a> or
+  <a href="https://github.com/inandusolutions/inandu-grid-vue">grid-vue</a> you already get it. Install it directly only to build your own grid or to reuse the helpers.</p>
+
+  <h2>Use</h2>
+<pre>import { formatCellValue, escapeCsvValue, matchesColumnFilter } from '@inandu-solutions/grid-core';
+
+formatCellValue(1234.5, 'number', '1.0-2', 'en-US');        // "1,234.50"
+formatCellValue('2024-01-05', 'date', 'YYYY-MM-DD', 'en-US'); // "2024-01-05", in every time zone
+escapeCsvValue('=HYPERLINK("http://example.com","x")');     // a quote is prefixed: opens as text</pre>
+
+  <h2>What is inside</h2>
+  <table>
+    <tr><th>Area</th><th>Exports</th></tr>
+    <tr><td>Formatting</td><td><code>formatCellValue</code>, <code>formatDateValue</code>, <code>coerceToDate</code>, <code>defaultNumberFormatter</code></td></tr>
+    <tr><td>Filtering</td><td><code>matchesColumnFilter</code>, <code>hasMeaningfulFilterValue</code></td></tr>
+    <tr><td>Sorting</td><td><code>compareCellValues</code></td></tr>
+    <tr><td>Trees</td><td><code>flattenTree</code>, <code>collectTreeRows</code></td></tr>
+    <tr><td>Aggregates</td><td><code>computeGroupAggregates</code>, <code>AGGREGATE_SYMBOLS</code></td></tr>
+    <tr><td>Parsing</td><td><code>parseDraftValue</code>, <code>parsePastedCellValue</code>, <code>parsePastedCell</code></td></tr>
+    <tr><td>Export helpers</td><td><code>escapeCsvValue</code>, <code>neutralizeCsvFormula</code>, <code>escapeMarkup</code>, <code>truncatePdfText</code>, <code>downloadBlob</code></td></tr>
+    <tr><td>i18n</td><td><code>en</code>, <code>es</code>, <code>fr</code>, <code>it</code>, <code>zh</code>, <code>INANDU_GRID_TRANSLATIONS</code></td></tr>
+  </table>
+
+  <h2>Behaviours worth knowing</h2>
+  <ul>
+    <li><strong>Dates are calendar dates.</strong> A bare <code>yyyy-mm-dd</code> is local midnight of that day, so it formats, filters and compares as that day west and east of UTC alike.</li>
+    <li><strong>CSV cells are neutralized.</strong> A cell starting with <code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>, a tab or a carriage return gets a leading quote; plain numbers are left alone.</li>
+    <li><strong>Excel markup drops what XML cannot carry</strong>, so a stray control character does not make Excel reject the file.</li>
+    <li><strong>Pasting never clears a cell by accident:</strong> <code>parsePastedCell</code> returns <code>undefined</code> for text a column cannot hold.</li>
+    <li><strong>PDF export and CJK text:</strong> jsPDF's built-in fonts have no CJK glyphs; embed a font that has them.</li>
+  </ul>
+
+  <p style="color:var(--muted);margin-top:2.5rem">MIT, Inandu SAS.</p>
+</main>
+</body>
+</html>
