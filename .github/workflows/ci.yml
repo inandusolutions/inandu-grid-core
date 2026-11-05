@@ -69,7 +69,7 @@ jobs:
           fi
           diff -u <(sed 's/\r$//' "$UPSTREAM") <(sed 's/\r$//' "$CORPUS")
 
-  # Node 20 / 22 / 24, and the whole suite once under several machine time zones: east of UTC, half-hour and +13/+14 offsets,
+  # Node 22 / 24, and the whole suite once under several machine time zones: east of UTC, half-hour and +13/+14 offsets,
   # a southern-hemisphere DST, west of UTC. (The date specs also switch TZ themselves; this runs everything else under it too.)
   matrix:
     name: node ${{ matrix.node }} / TZ ${{ matrix.tz }}
@@ -78,7 +78,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { node: 20, tz: UTC }
           - { node: 24, tz: UTC }
           - { node: 22, tz: Asia/Tokyo }
           - { node: 22, tz: Asia/Kolkata }
@@ -104,3 +103,25 @@ jobs:
 
       - name: Unit tests
         run: npm test
+
+  # Node 20 is a supported runtime, but the test runner (vitest 5) needs Node >= 22.12, so the suite cannot run there. What a
+  # Node 20 consumer gets is the built package: build it on Node 20 and run the differential corpus against `dist` (ESM and CJS).
+  node20:
+    name: node 20 / built package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 20
+          cache: npm
+
+      # Installing the dev tooling warns about engines on Node 20 (vitest, jsdom); only the build and the smoke script run here.
+      - run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+      - name: Smoke test the built package
+        run: node scripts/smoke-dist.mjs
