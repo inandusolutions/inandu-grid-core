@@ -4,7 +4,7 @@ import type { ColumnConfig } from './index';
 
 // A calendar date must mean the same day whatever the viewer's time zone. West of UTC is where
 // `new Date('2024-01-05')` (UTC midnight) lands on the previous evening, so that is where it broke.
-const ZONES = ['America/Bogota', 'America/Los_Angeles', 'UTC', 'Asia/Tokyo'];
+const ZONES = ['America/Bogota', 'America/Los_Angeles', 'UTC', 'Asia/Tokyo', 'Europe/Madrid', 'Asia/Kolkata', 'Pacific/Auckland', 'Pacific/Apia', 'Pacific/Kiritimati', 'America/Sao_Paulo'];
 const original = process.env.TZ;
 
 const dateColumn: ColumnConfig = {

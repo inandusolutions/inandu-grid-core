@@ -28,7 +28,13 @@ export function defaultNumberFormatter(value: number, locale: string, digitsInfo
   } else {
     options.maximumFractionDigits = 3;
   }
-  return new Intl.NumberFormat(locale || undefined, options).format(value);
+  try {
+    return new Intl.NumberFormat(locale || undefined, options).format(value);
+  } catch (error) {
+    // A locale that is not well formed ('en_US', a typo) makes Intl throw a RangeError; that must not take the grid down.
+    if (error instanceof RangeError) return new Intl.NumberFormat(undefined, options).format(value);
+    throw error;
+  }
 }
 
 /**

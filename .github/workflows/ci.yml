@@ -42,3 +42,86 @@ jobs:
 
       - name: Audit production dependencies
         run: npm audit --omit=dev
+
+  # The differential corpus must be identical in every repo that runs it (see the test that reads it). The canonical copy
+  # is inandu-grid-extensions tests/Inandu.Grid.Extensions.Tests/Contract/diff-corpus.json, pinned by EXT_REF. Until EXT_REF
+  # points at a commit that has the file, the check only says so; bump EXT_REF when the Extensions change is merged.
+  corpus-sync:
+    runs-on: ubuntu-latest
+    env:
+      EXT_REF: 7298765488cbdf8fffea663498c059ffef26d871    # inandusolutions/inandu-grid-extensions
+      CORPUS: contract/diff-corpus.json
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: inandusolutions/inandu-grid-extensions
+          ref: ${{ env.EXT_REF }}
+          path: _upstream/extensions
+
+      - name: Compare diff-corpus.json with inandu-grid-extensions
+        run: |
+          UPSTREAM=_upstream/extensions/tests/Inandu.Grid.Extensions.Tests/Contract/diff-corpus.json
+          if [ ! -f "$UPSTREAM" ]; then
+            echo "::notice::EXT_REF has no diff-corpus.json yet: bump EXT_REF once the Extensions change is merged."
+            exit 0
+          fi
+          diff -u <(sed 's/\r$//' "$UPSTREAM") <(sed 's/\r$//' "$CORPUS")
+
+  # Node 22 / 24, and the whole suite once under several machine time zones: east of UTC, half-hour and +13/+14 offsets,
+  # a southern-hemisphere DST, west of UTC. (The date specs also switch TZ themselves; this runs everything else under it too.)
+  matrix:
+    name: node ${{ matrix.node }} / TZ ${{ matrix.tz }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { node: 24, tz: UTC }
+          - { node: 22, tz: Asia/Tokyo }
+          - { node: 22, tz: Asia/Kolkata }
+          - { node: 22, tz: Pacific/Auckland }
+          - { node: 22, tz: Pacific/Kiritimati }
+          - { node: 22, tz: Europe/Madrid }
+          - { node: 22, tz: America/Bogota }
+          - { node: 22, tz: America/Sao_Paulo }
+    env:
+      TZ: ${{ matrix.tz }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci --ignore-scripts
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+  # Node 20 is a supported runtime, but the test runner (vitest 5) needs Node >= 22.12, so the suite cannot run there. What a
+  # Node 20 consumer gets is the built package: build it on Node 20 and run the differential corpus against `dist` (ESM and CJS).
+  node20:
+    name: node 20 / built package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 20
+          cache: npm
+
+      # Installing the dev tooling warns about engines on Node 20 (vitest, jsdom); only the build and the smoke script run here.
+      - run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+      - name: Smoke test the built package
+        run: node scripts/smoke-dist.mjs

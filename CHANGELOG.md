@@ -6,6 +6,28 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- `defaultNumberFormatter` no longer throws a `RangeError` for a locale that is not well formed (`en_US`, a typo): it falls back to the
+  runtime default locale, so a wrong `locale` prop cannot take a grid down.
+
+### Changed
+
+- **`jspdf` is an optional peer dependency** instead of a dependency (`peerDependenciesMeta.jspdf.optional`). Only the type of
+  `truncatePdfText` uses it, so nothing in this package needs it installed. A grid that never exports PDF no longer pulls
+  `jspdf` (and its `core-js` postinstall script) into the project; the grids ask for it only when their PDF export is used.
+
+### Added
+
+- `sanitizeGridState(value, parts?)`, `GRID_STATE_VERSION`, `ALL_GRID_STATE_PARTS`: reads a saved grid state (widths, order,
+  hidden columns, pins, sort, filters) from whatever `JSON.parse` returned and keeps only what has the right shape, types
+  and limits, so a stale, hand-edited or hostile blob in storage cannot reach the grid. `parts` limits it to what the grid
+  persists.
+
+- `buildPrintHtml(title, headers, rows)` and `printHtmlDocument(html)`: the print page of a table, with every text escaped,
+  opened through a `Blob` URL with `noopener` instead of `document.write` into a same-origin window (the page has no
+  `window.opener` and shares nothing with the app). The grids use them for `printTable`.
+
 ## [0.1.2] - 2026-11-04
 
 Everything is additive: a caller that passes nothing new gets the same results as before, except where a result was wrong.

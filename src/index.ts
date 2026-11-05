@@ -49,10 +49,13 @@ export {
 } from './parse';
 export type { InanduPasteOptions } from './parse';
 export { escapeAttributeSelectorValue } from './dom';
+export { sanitizeGridState, GRID_STATE_VERSION, ALL_GRID_STATE_PARTS } from './state';
+export type { InanduGridSavedState, InanduGridStatePart } from './state';
 
 export { escapeCsvValue, neutralizeCsvFormula } from './export/csv';
 export type { CsvEscapeOptions } from './export/csv';
 export { escapeMarkup } from './export/markup';
+export { buildPrintHtml, printHtmlDocument } from './export/print';
 export { truncatePdfText } from './export/pdf';
 export { downloadBlob } from './export/download';
 
