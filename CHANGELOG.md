@@ -6,6 +6,11 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- `defaultNumberFormatter` no longer throws a `RangeError` for a locale that is not well formed (`en_US`, a typo): it falls back to the
+  runtime default locale, so a wrong `locale` prop cannot take a grid down.
+
 ### Changed
 
 - **`jspdf` is an optional peer dependency** instead of a dependency (`peerDependenciesMeta.jspdf.optional`). Only the type of
