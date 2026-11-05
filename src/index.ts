@@ -49,6 +49,8 @@ export {
 } from './parse';
 export type { InanduPasteOptions } from './parse';
 export { escapeAttributeSelectorValue } from './dom';
+export { sanitizeGridState, GRID_STATE_VERSION, ALL_GRID_STATE_PARTS } from './state';
+export type { InanduGridSavedState, InanduGridStatePart } from './state';
 
 export { escapeCsvValue, neutralizeCsvFormula } from './export/csv';
 export type { CsvEscapeOptions } from './export/csv';

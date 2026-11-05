@@ -23,6 +23,7 @@ const DOCUMENTED = [
   'neutralizeCsvFormula',
   'escapeMarkup',
   'buildPrintHtml',
+  'sanitizeGridState',
   'printHtmlDocument',
   'truncatePdfText',
   'downloadBlob',

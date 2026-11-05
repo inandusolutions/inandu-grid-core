@@ -14,6 +14,11 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `sanitizeGridState(value, parts?)`, `GRID_STATE_VERSION`, `ALL_GRID_STATE_PARTS`: reads a saved grid state (widths, order,
+  hidden columns, pins, sort, filters) from whatever `JSON.parse` returned and keeps only what has the right shape, types
+  and limits, so a stale, hand-edited or hostile blob in storage cannot reach the grid. `parts` limits it to what the grid
+  persists.
+
 - `buildPrintHtml(title, headers, rows)` and `printHtmlDocument(html)`: the print page of a table, with every text escaped,
   opened through a `Blob` URL with `noopener` instead of `document.write` into a same-origin window (the page has no
   `window.opener` and shares nothing with the app). The grids use them for `printTable`.
