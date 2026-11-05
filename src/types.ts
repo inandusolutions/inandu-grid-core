@@ -31,6 +31,11 @@ export interface ColumnConfig {
   format(): string;
   order(): number | undefined;
   aggregate(): InanduColumnAggregate;
+  /**
+   * `'date'` columns: the zone a date is shown and filtered in — `'local'` (the default, the browser's), `'utc'`, or an IANA
+   * name such as `'America/Bogota'`. Without it `2024-01-05T00:00:00Z` shows as the 4th west of UTC.
+   */
+  timeZone?(): string | undefined;
 }
 
 /** Raw values from a single column's filter controls; which keys are used depends on that column's `type`. */
