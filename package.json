@@ -1,6 +1,6 @@
 {
   "name": "@inandu-solutions/grid-core",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Framework-agnostic core of the Inandu data grid: sorting, filtering, parsing, formatting, aggregates, tree flattening, CSV/Excel/PDF export helpers and i18n messages. The shared engine behind @inandu-solutions/grid-angular, grid-react and grid-vue.",
   "keywords": [
     "data-grid",
