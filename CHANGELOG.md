@@ -6,6 +6,8 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-11-05
+
 ### Fixed
 
 - `defaultNumberFormatter` no longer throws a `RangeError` for a locale that is not well formed (`en_US`, a typo): it falls back to the
@@ -96,6 +98,8 @@ carried a copy of, now in one package, with these fixes applied on the way in.
   invalid number or date), so a paste does not clear a cell.
 - `neutralizeCsvFormula` and the `CsvEscapeOptions` type.
 
-[Unreleased]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/inandusolutions/inandu-grid-core/releases/tag/v0.1.0
