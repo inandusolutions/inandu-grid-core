@@ -47,7 +47,7 @@ To add a case: edit `contract/diff-corpus.src.json` (each case has a `client` fo
 `contract/diff-corpus.json` to the Extensions test project and to the grids. All five test suites must pass before merging.
 When one of them disagrees, that is a bug in one of the implementations, not a reason to edit `expectedIds`.
 
-**The CI matrix.** `build-test` is the required check. The `matrix` job runs the suite on Node 20, 22 and 24 and, on Node 22,
-under machine time zones east and west of UTC (Tokyo, Kolkata, Auckland, Kiritimati, Madrid, Bogota, São Paulo). Reproduce one
+**The CI matrix.** `build-test` is the required check. The `matrix` job runs the suite on Node 24 and, on Node 22,
+under machine time zones east and west of UTC (Tokyo, Kolkata, Auckland, Kiritimati, Madrid, Bogota, São Paulo)). The test runner (vitest 5) needs Node >= 22.12, so Node 20 is covered by the `node20` job instead: it builds the package and runs the differential corpus against `dist` (`scripts/smoke-dist.mjs`). Reproduce one
 locally with `TZ=Pacific/Auckland npm test`. A runtime with small-icu cannot be reproduced in CI: the code falls back to
 numeric months and the runtime default locale when `Intl` rejects a locale (see `src/dst-icu.spec.ts`).
