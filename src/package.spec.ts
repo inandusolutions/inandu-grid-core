@@ -22,6 +22,8 @@ const DOCUMENTED = [
   'escapeCsvValue',
   'neutralizeCsvFormula',
   'escapeMarkup',
+  'buildPrintHtml',
+  'printHtmlDocument',
   'truncatePdfText',
   'downloadBlob',
   'en',

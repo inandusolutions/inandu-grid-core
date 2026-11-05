@@ -6,6 +6,18 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **`jspdf` is an optional peer dependency** instead of a dependency (`peerDependenciesMeta.jspdf.optional`). Only the type of
+  `truncatePdfText` uses it, so nothing in this package needs it installed. A grid that never exports PDF no longer pulls
+  `jspdf` (and its `core-js` postinstall script) into the project; the grids ask for it only when their PDF export is used.
+
+### Added
+
+- `buildPrintHtml(title, headers, rows)` and `printHtmlDocument(html)`: the print page of a table, with every text escaped,
+  opened through a `Blob` URL with `noopener` instead of `document.write` into a same-origin window (the page has no
+  `window.opener` and shares nothing with the app). The grids use them for `printTable`.
+
 ## [0.1.2] - 2026-11-04
 
 Everything is additive: a caller that passes nothing new gets the same results as before, except where a result was wrong.

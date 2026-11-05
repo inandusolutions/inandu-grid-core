@@ -57,10 +57,16 @@
     "build": "vite build",
     "test:coverage": "vitest run --coverage --coverage.include=src/**/*.ts --coverage.exclude=src/**/*.spec.ts"
   },
-  "dependencies": {
+  "peerDependencies": {
     "jspdf": "^4.2.1"
   },
+  "peerDependenciesMeta": {
+    "jspdf": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "jspdf": "^4.2.1",
     "@types/node": "^26.6.6",
     "@typescript/typescript6": "^6.0.2",
     "@vitest/coverage-v8": "^5.1.0",

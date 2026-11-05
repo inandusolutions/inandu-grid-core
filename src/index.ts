@@ -53,6 +53,7 @@ export { escapeAttributeSelectorValue } from './dom';
 export { escapeCsvValue, neutralizeCsvFormula } from './export/csv';
 export type { CsvEscapeOptions } from './export/csv';
 export { escapeMarkup } from './export/markup';
+export { buildPrintHtml, printHtmlDocument } from './export/print';
 export { truncatePdfText } from './export/pdf';
 export { downloadBlob } from './export/download';
 
