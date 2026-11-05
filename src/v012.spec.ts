@@ -144,6 +144,13 @@ describe('date tokens', () => {
     expect(formatDateValue(date, '[YYYY]')).toBe('YYYY');
   });
 
+  it('stays linear on a format full of unclosed brackets', () => {
+    const hostile = '['.repeat(50000) + 'x';
+    const started = Date.now();
+    expect(formatDateValue(date, hostile)).toBe(hostile);
+    expect(Date.now() - started).toBeLessThan(1000);
+  });
+
   it('writes the month name in the locale', () => {
     expect(formatDateValue(date, 'MMMM', { locale: 'en' })).toBe('January');
     expect(formatDateValue(date, 'MMM', { locale: 'en' })).toBe('Jan');

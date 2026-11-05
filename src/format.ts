@@ -59,7 +59,7 @@ export function coerceToDate(value: unknown): Date {
 // Field names from the ECMA-262 Date Time String Format (case-sensitive: MM = month, mm = minutes), plus MMM/MMMM for
 // the month name and `[text]` for literal text. Longer tokens come first so that 'sss' is not read as 'ss' + 's'
 // and 'MMMM' as 'MM' + 'MM'.
-const DATE_TOKEN_PATTERN = /\[([^\]]*)\]|YYYY|sss|MMMM|MMM|MM|DD|HH|mm|ss/g;
+const DATE_TOKEN_PATTERN = /\[([^\][]*)\]|YYYY|sss|MMMM|MMM|MM|DD|HH|mm|ss/g;
 
 /** Where the wall-clock parts of an instant are read: the browser's zone (default), `'utc'`, or an IANA name such as `'America/Bogota'`. */
 export type InanduTimeZone = 'local' | 'utc' | (string & {});
