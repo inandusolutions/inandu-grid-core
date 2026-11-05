@@ -32,3 +32,22 @@ A change that depends on the time zone should be tested with `TZ` set (see `src/
 
 - Add a test for the behaviour you change, and a line under `## [Unreleased]` in `CHANGELOG.md`.
 - Keep the package free of framework imports and of anything that needs a DOM, except `downloadBlob`.
+
+## Testing across implementations and environments
+
+**The differential corpus.** The same rows and the same requests are run through every implementation of the grid semantics
+(filters, free-text search, multi-column sort, nulls, whole-day dates, set filters): this core, `grid-angular`, `grid-react`,
+`grid-vue` (client side) and `Inandu.Grid.Extensions` (an in-memory `ToInanduGrid`, server side). Each must return the same
+ids in the same order. The canonical file is `inandu-grid-extensions/tests/Inandu.Grid.Extensions.Tests/Contract/diff-corpus.json`;
+this repo and the three grids keep an identical copy, and the `corpus-sync` job compares it with the Extensions copy pinned by
+`EXT_REF`.
+
+To add a case: edit `contract/diff-corpus.src.json` (each case has a `client` form and a `server` query string), run
+`WRITE_CORPUS=1 npm test -- diff-corpus` to compute `expectedIds`, **read the ids and check them by hand**, then copy
+`contract/diff-corpus.json` to the Extensions test project and to the grids. All five test suites must pass before merging.
+When one of them disagrees, that is a bug in one of the implementations, not a reason to edit `expectedIds`.
+
+**The CI matrix.** `build-test` is the required check. The `matrix` job runs the suite on Node 20, 22 and 24 and, on Node 22,
+under machine time zones east and west of UTC (Tokyo, Kolkata, Auckland, Kiritimati, Madrid, Bogota, São Paulo). Reproduce one
+locally with `TZ=Pacific/Auckland npm test`. A runtime with small-icu cannot be reproduced in CI: the code falls back to
+numeric months and the runtime default locale when `Intl` rejects a locale (see `src/dst-icu.spec.ts`).
