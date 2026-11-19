@@ -6,6 +6,12 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- `truncatePdfText` no longer cuts a character made of two UTF-16 units (an emoji, for one) in half. The search counted code units, so the
+  cut could land between the halves and leave a lone surrogate in the cell text, which a PDF shows as a replacement mark or a gap. The cut
+  now backs off to the character boundary.
+
 ## [0.1.4] - 2026-11-19
 
 ### Fixed

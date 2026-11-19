@@ -66,3 +66,38 @@ describe('truncatePdfText', () => {
     expect(widthCalls()).toBeLessThan(30);
   });
 });
+
+describe('escapeMarkup: Unicode', () => {
+  it('keeps text that is valid in XML: accents, CJK, right-to-left, and emoji (surrogate pairs)', () => {
+    expect(escapeMarkup('Ñandú 日本語 العربية 🚀')).toBe('Ñandú 日本語 العربية 🚀');
+  });
+
+  it('drops U+FFFE and U+FFFF, which XML cannot carry, and keeps their neighbours', () => {
+    expect(escapeMarkup('a\uFFFEb\uFFFFc')).toBe('abc');
+  });
+
+  it('escapes markup and still keeps Unicode around it', () => {
+    expect(escapeMarkup('<日本語 & 🚀>')).toBe('&lt;日本語 &amp; 🚀&gt;');
+  });
+});
+
+describe('truncatePdfText: characters made of two UTF-16 units', () => {
+  // 10 units per UTF-16 code unit, "…" included, as the stand-in in the block above.
+  const doc = { getTextWidth: (t: string) => t.length * 10 } satisfies PdfTextMeasurer;
+  const lone = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/;
+
+  it('never cuts an emoji in half, wherever the cut falls', () => {
+    const text = '🚀'.repeat(20);
+    for (let width = 10; width <= 400; width += 10) {
+      const out = truncatePdfText(doc, text, width);
+      expect(lone.test(out)).toBe(false);
+      expect(doc.getTextWidth(out)).toBeLessThanOrEqual(width);
+    }
+  });
+
+  it('cuts text that mixes ASCII and emoji at a character boundary', () => {
+    const out = truncatePdfText(doc, 'ab🚀cd🚀ef', 50); // 4 units + "…": would be "ab🚀" plus half of the next one
+    expect(lone.test(out)).toBe(false);
+    expect(out.endsWith('…')).toBe(true);
+  });
+});
