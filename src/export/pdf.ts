@@ -23,5 +23,13 @@ export function truncatePdfText(doc: PdfTextMeasurer, text: string, maxWidth: nu
     if (doc.getTextWidth(text.slice(0, mid) + '…') <= maxWidth) low = mid;
     else high = mid;
   }
+  // The search counts UTF-16 units, so the cut can land between the two halves of a character such as an emoji. Back off by one: a
+  // lone surrogate is not valid text and shows up as a replacement mark or a gap in the PDF.
+  if (low > 0 && isHighSurrogate(text.charCodeAt(low - 1)) && isLowSurrogate(text.charCodeAt(low))) {
+    low -= 1;
+  }
   return text.slice(0, low) + '…';
 }
+
+const isHighSurrogate = (code: number): boolean => code >= 0xd800 && code <= 0xdbff;
+const isLowSurrogate = (code: number): boolean => code >= 0xdc00 && code <= 0xdfff;

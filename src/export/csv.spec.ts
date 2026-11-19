@@ -30,3 +30,34 @@ describe('escapeCsvValue: formula neutralization', () => {
     expect(escapeCsvValue('=1+1', { neutralizeFormulas: false })).toBe('=1+1');
   });
 });
+
+describe('escapeCsvValue: Unicode and awkward text (export fixtures)', () => {
+  it.each(['Ñandú', '日本語', '🚀 launch', 'العربية', 'עברית', 'e\u0301 (a combining accent)', '\u202Eright-to-left override'])(
+    'leaves %j alone: no quoting, no change',
+    value => {
+      expect(escapeCsvValue(value)).toBe(value);
+    },
+  );
+
+  it('quotes a cell with a carriage return, a line feed or both, whatever the text around them', () => {
+    expect(escapeCsvValue('日本\r\n語')).toBe('"日本\r\n語"');
+    expect(escapeCsvValue('🚀\n🚀')).toBe('"🚀\n🚀"');
+    expect(escapeCsvValue('a\rb')).toBe('"a\rb"');
+  });
+
+  it('neutralizes a formula that hides behind a line break, a tab or text in another script', () => {
+    expect(escapeCsvValue('=日本語')).toBe("'=日本語");
+    expect(escapeCsvValue('@🚀')).toBe("'@🚀");
+    expect(neutralizeCsvFormula('-1-1')).toBe("'-1-1");
+    expect(neutralizeCsvFormula('+1\t=1+1')).toBe("'+1\t=1+1");
+  });
+
+  it('keeps the quote doubling correct next to non-ASCII text', () => {
+    expect(escapeCsvValue('"日本語", dijo')).toBe('"""日本語"", dijo"');
+  });
+
+  it('handles a very long cell without changing it', () => {
+    const long = 'ñ'.repeat(100000);
+    expect(escapeCsvValue(long)).toBe(long);
+  });
+});
