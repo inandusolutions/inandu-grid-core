@@ -57,6 +57,7 @@ export type { CsvEscapeOptions } from './export/csv';
 export { escapeMarkup } from './export/markup';
 export { buildPrintHtml, printHtmlDocument } from './export/print';
 export { truncatePdfText } from './export/pdf';
+export type { PdfTextMeasurer } from './export/pdf';
 export { downloadBlob } from './export/download';
 
 export { en, es, fr, it, zh, INANDU_GRID_TRANSLATIONS } from './i18n';

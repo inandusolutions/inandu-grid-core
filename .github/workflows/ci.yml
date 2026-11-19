@@ -40,6 +40,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      # The published declarations must not import anything this package does not depend on (a consumer with skipLibCheck off
+      # would get TS2307): that is how the jspdf types once leaked through truncatePdfText.
+      - name: Check the declarations are self-contained
+        run: npm run check:dts
+
       - name: Audit production dependencies
         run: npm audit --omit=dev
 
