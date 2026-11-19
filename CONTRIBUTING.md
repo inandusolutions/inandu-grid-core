@@ -59,3 +59,17 @@ When one of them disagrees, that is a bug in one of the implementations, not a r
 under machine time zones east and west of UTC (Tokyo, Kolkata, Auckland, Kiritimati, Madrid, Bogota, São Paulo)). The test runner (vitest 5) needs Node >= 22.12, so Node 20 is covered by the `node20` job instead: it builds the package and runs the differential corpus against `dist` (`scripts/smoke-dist.mjs`). Reproduce one
 locally with `TZ=Pacific/Auckland npm test`. A runtime with small-icu cannot be reproduced in CI: the code falls back to
 numeric months and the runtime default locale when `Intl` rejects a locale (see `src/dst-icu.spec.ts`).
+
+## Dependency updates
+
+Dependabot opens its pull requests on Mondays: one run for npm and one for GitHub Actions. Packages that peer-pin each other are grouped, so they move together in one pull request instead of breaking each other in separate ones:
+
+- **vite**: `vite`, `vitest` and `vite-plugin-dts`. The test runner and the declaration plugin peer-depend on Vite.
+
+Every other development dependency gets one grouped pull request for minor and patch updates. Major updates are never grouped: each one is its own pull request, read and decided on its own.
+
+Rules for these pull requests:
+
+- They need the same green checks as any other pull request, and nothing is merged with a failing or skipped check.
+- A group is merged as a whole. If one package in it breaks the build, fix or hold the whole group; do not split it by hand, because the packages are grouped exactly because they cannot move apart.
+- Runtime dependencies are few on purpose. A pull request that adds one needs a reason in its description.
