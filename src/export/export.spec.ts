@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { jsPDF } from 'jspdf';
 import { downloadBlob, escapeMarkup, truncatePdfText } from '../index';
+import type { PdfTextMeasurer } from '../index';
 
 describe('downloadBlob', () => {
   afterEach(() => {
@@ -43,7 +43,7 @@ describe('escapeMarkup', () => {
 
 describe('truncatePdfText', () => {
   // 10 units per character, "…" included.
-  const doc = { getTextWidth: vi.fn((t: string) => t.length * 10) } as unknown as jsPDF;
+  const doc = { getTextWidth: vi.fn((t: string) => t.length * 10) } satisfies PdfTextMeasurer;
   const widthCalls = () => (doc.getTextWidth as ReturnType<typeof vi.fn>).mock.calls.length;
 
   it('returns text that fits unchanged', () => {

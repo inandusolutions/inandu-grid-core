@@ -1,11 +1,18 @@
-import type { jsPDF } from 'jspdf';
+/**
+ * The one thing `truncatePdfText` needs from a PDF document: the rendered width of a string in its current font. A `jsPDF`
+ * instance satisfies it, and so does any stand-in. It is declared here instead of importing `jsPDF` so the published
+ * declarations never reference `jspdf` (an optional peer of the grids, not of this package).
+ */
+export interface PdfTextMeasurer {
+  getTextWidth(text: string): number;
+}
 
 /**
  * Shortens `text` with a trailing "…" until it fits `maxWidth` (in the PDF's current font), unchanged if it already fits.
  * Finds the cut with a binary search (the width of a prefix only grows with its length), so a long cell costs
  * O(log n) width measurements instead of one per removed character.
  */
-export function truncatePdfText(doc: jsPDF, text: string, maxWidth: number): string {
+export function truncatePdfText(doc: PdfTextMeasurer, text: string, maxWidth: number): string {
   if (doc.getTextWidth(text) <= maxWidth) {
     return text;
   }

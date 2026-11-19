@@ -6,6 +6,21 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- The published declarations no longer import from `jspdf`. `truncatePdfText` now takes a `PdfTextMeasurer` (anything with
+  `getTextWidth(text): number`, which a `jsPDF` instance satisfies), so a consumer with `skipLibCheck: false` that has not installed
+  `jspdf` no longer gets `TS2307` from `dist/export/pdf.d.ts`.
+
+### Changed
+
+- `jspdf` is no longer a peer (or dev) dependency of this package: nothing here uses it any more. The grids keep their own optional
+  `jspdf` peer for PDF export. `PdfTextMeasurer` is exported as a type.
+
+### Added
+
+- `npm run check:dts` (CI step): fails when a built `.d.ts` imports a package that is not a dependency or peer of this one.
+
 ## [0.1.3] - 2026-11-05
 
 ### Fixed
