@@ -6,6 +6,8 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-11-19
+
 ### Fixed
 
 - The published declarations no longer import from `jspdf`. `truncatePdfText` now takes a `PdfTextMeasurer` (anything with
@@ -20,6 +22,9 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - `npm run check:dts` (CI step): fails when a built `.d.ts` imports a package that is not a dependency or peer of this one.
+- Release checks in CI, with no effect on the published code: `npm run api:check` (the exported API against the committed `api/public-api.txt`),
+  `npm run check:package` (no imports, size budgets, tarball contents) and `npm run smoke:package` (installs the packed tarball in an empty
+  project and compiles a consumer).
 
 ## [0.1.3] - 2026-11-05
 
@@ -113,7 +118,8 @@ carried a copy of, now in one package, with these fixes applied on the way in.
   invalid number or date), so a paste does not clear a cell.
 - `neutralizeCsvFormula` and the `CsvEscapeOptions` type.
 
-[Unreleased]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/inandusolutions/inandu-grid-core/compare/v0.1.0...v0.1.1
