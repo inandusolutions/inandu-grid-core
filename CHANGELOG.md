@@ -6,6 +6,8 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-11-19
+
 ### Fixed
 
 - `truncatePdfText` no longer cuts a character made of two UTF-16 units (an emoji, for one) in half. The search counted code units, so the
