@@ -24,7 +24,15 @@ npm install
 npm run typecheck   # tsc --noEmit
 npm test            # vitest run
 npm run build       # dist/ (ES + CJS + types)
+npm run api:check   # after build: the exported API matches api/public-api.txt
+npm run api:update  # rewrite that snapshot (review the diff: it is the API change of the release)
+npm run check:package   # after build: no imports, size budgets, tarball contents, entry points
+npm run smoke:package   # after build: install the packed tarball in an empty project and compile a consumer
 ```
+
+A pull request that changes the public API (an export, a type, a signature) has to include the updated `api/public-api.txt`; CI fails
+otherwise. The three grids re-export this package, so an API change here reaches them: say so in the changelog. Size budgets live in
+`scripts/check-package.mjs`: raise one there when the growth is intended.
 
 A change that depends on the time zone should be tested with `TZ` set (see `src/timezone.spec.ts`).
 

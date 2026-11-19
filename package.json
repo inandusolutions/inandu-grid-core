@@ -55,6 +55,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build": "vite build",
+    "api:check": "node scripts/api-snapshot.mjs",
+    "api:update": "node scripts/api-snapshot.mjs --update",
+    "check:package": "node scripts/check-package.mjs",
+    "smoke:package": "node scripts/smoke-package.mjs",
     "test:coverage": "vitest run --coverage --coverage.include=src/**/*.ts --coverage.exclude=src/**/*.spec.ts"
   },
   "peerDependencies": {

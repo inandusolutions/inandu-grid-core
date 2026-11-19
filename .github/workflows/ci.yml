@@ -43,6 +43,14 @@ jobs:
       - name: Audit production dependencies
         run: npm audit --omit=dev
 
+      # The exported API (names, kinds, members, types) is a committed snapshot: a removed or retyped export shows up in the pull
+      # request. After an intended change run `npm run build && npm run api:update` and commit api/public-api.txt.
+      - name: Check the public API snapshot
+        run: npm run api:check
+
+      # No imports besides its own files, size budgets, tarball contents and entry points (scripts/check-package.mjs).
+      - name: Check the package
+        run: npm run check:package
   # The differential corpus must be identical in every repo that runs it (see the test that reads it). The canonical copy
   # is inandu-grid-extensions tests/Inandu.Grid.Extensions.Tests/Contract/diff-corpus.json, pinned by EXT_REF. Until EXT_REF
   # points at a commit that has the file, the check only says so; bump EXT_REF when the Extensions change is merged.
@@ -125,3 +133,22 @@ jobs:
 
       - name: Smoke test the built package
         run: node scripts/smoke-dist.mjs
+
+  # Installs the packed tarball into an empty project and compiles/loads a consumer against it (scripts/smoke-package.mjs).
+  package-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Smoke test the packed package
+        run: npm run smoke:package
