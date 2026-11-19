@@ -68,9 +68,7 @@ export const text: string = formatCellValue(1234.5, type, '', 'en');
   console.log('tsc (strict, skipLibCheck on)...');
   tsc('tsconfig.json');
 
-  // Until the declarations stop importing the types of jspdf (see the pull request that removes that import), a strict consumer needs it installed.
-  console.log('tsc (strict, skipLibCheck off, jspdf installed)...');
-  npm(['install', '--no-save', '--no-audit', '--no-fund', '--ignore-scripts', '--loglevel=error', 'jspdf@^4.2.1'], app);
+  console.log('tsc (strict, skipLibCheck off)...');
   tsc('tsconfig.strict.json');
 
   console.log('node import + require...');

@@ -86,6 +86,8 @@ function parsePastedBoolean(raw: string, options?: InanduPasteOptions | undefine
 function parsePastedCell(raw: string, type: InanduColumnType, options?: InanduPasteOptions | undefined): { value: unknown; } | undefined
 function parsePastedCellValue(raw: string, type: InanduColumnType, options?: InanduPasteOptions | undefined): unknown
 function parsePastedDate(raw: string, locale?: string | undefined): Date | undefined
+interface PdfTextMeasurer
+  getTextWidth: (text: string) => number
 function placeColumnsByOrder<C extends { order(): number | undefined; }>(columns: readonly C[]): C[]
 function printHtmlDocument(html: string, options?: { autoPrint?: boolean; } | undefined): void
 const ROW_DRAG_COLUMN_WIDTH: 32
@@ -97,6 +99,6 @@ interface TreeVisibleRow
   expandable: boolean
   expanded: boolean
   row: T
-function truncatePdfText(doc: jsPDF, text: string, maxWidth: number): string
+function truncatePdfText(doc: PdfTextMeasurer, text: string, maxWidth: number): string
 const zh: <type of 1027 chars, sha1 be32e97744b9>
 function zonedDateParts(date: Date, timeZone?: string | undefined): DateParts

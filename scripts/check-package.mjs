@@ -14,9 +14,9 @@ import { fileURLToPath } from 'node:url';
 
 /**
  * Budgets in KB, about 25% above today's sizes (ESM 25, CJS 21, tarball 25: small numbers, so the margin is wider than in the
- * grids). `allowedPeers` are peers the manifest may declare; none is required and no bundle may import them.
+ * grids). `allowedPeers` are the peers the manifest may declare: none, grid-core has no peers since its declarations stopped importing jspdf.
  */
-const CONFIG = { name: '@inandu-solutions/grid-core', allowedPeers: ['jspdf'], budgetKB: { esm: 32, cjs: 27, tarball: 32 } };
+const CONFIG = { name: '@inandu-solutions/grid-core', allowedPeers: [], budgetKB: { esm: 32, cjs: 27, tarball: 32 } };
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
