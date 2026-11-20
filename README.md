@@ -32,6 +32,9 @@ npm install @inandu-solutions/grid-core
 | Aggregates | `computeGroupAggregates`, `AGGREGATE_SYMBOLS` |
 | Parsing | `parseDraftValue`, `parsePastedCellValue`, `parsePastedCell` |
 | Export helpers | `escapeCsvValue`, `neutralizeCsvFormula`, `escapeMarkup`, `truncatePdfText`, `downloadBlob` |
+| Saved state | `readSavedGridState`, `writeSavedGridState`, `clearSavedGridState`, `sanitizeGridState` |
+| Delete confirmation | `createDeleteConfirmation` |
+| Server replies | `parseServerResponse` |
 | i18n | `en`, `es`, `fr`, `it`, `zh`, `INANDU_GRID_TRANSLATIONS` |
 
 ```ts

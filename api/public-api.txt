@@ -1,6 +1,7 @@
 const AGGREGATE_SYMBOLS: Record<"sum" | "avg" | "min" | "max" | "count", string>
 const ALL_GRID_STATE_PARTS: readonly InanduGridStatePart[]
 function buildPrintHtml(title: string, headers: readonly string[], rows: readonly (readonly string[])[]): string
+function clearSavedGridState(key: string, storage?: GridStateStorage | undefined): void
 function coerceToDate(value: unknown): Date
 function collectTreeRows<T>(roots: readonly T[], getChildren: (row: T) => readonly T[] | undefined): T[]
 interface ColumnConfig
@@ -15,6 +16,7 @@ interface CompareCellOptions
   type?: InanduColumnType | undefined
 function compareCellValues(a: unknown, b: unknown, localeOrOptions?: string | CompareCellOptions | undefined): number
 function computeGroupAggregates(rows: InanduGridRow[], aggregateColumns: readonly ColumnConfig[]): Record<string, number>
+function createDeleteConfirmation(): DeleteConfirmation
 interface CsvEscapeOptions
   neutralizeFormulas?: boolean | undefined
 interface DateFormatOptions
@@ -29,6 +31,12 @@ interface DateParts
   second: number
   year: number
 function defaultNumberFormatter(value: number, locale: string, digitsInfo?: string | undefined): string
+interface DeleteConfirmation
+  run: (options: DeleteConfirmationOptions, rows: InanduGridRow[], proceed: () => void) => void
+interface DeleteConfirmationOptions
+  ask?: ((message: string) => boolean) | undefined
+  confirmDelete?: ((rows: InanduGridRow[]) => boolean | Promise<boolean>) | undefined
+  message?: string | undefined
 const DETAIL_TOGGLE_COLUMN_WIDTH: 32
 function downloadBlob(content: string | Blob, filename: string, mimeType?: string | undefined): void
 const en: <type of 1027 chars, sha1 be32e97744b9>
@@ -46,6 +54,7 @@ function formatCellValue(value: unknown, type: InanduColumnType, format: string,
 function formatDateValue(date: Date, format: string, options?: DateFormatOptions | undefined): string
 const fr: <type of 1027 chars, sha1 be32e97744b9>
 const GRID_STATE_VERSION: 1
+type GridStateStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 function hasMeaningfulFilterValue(value: InanduGridColumnFilterValue | undefined): boolean
 const INANDU_GRID_TRANSLATIONS: Record<string, Record<string, string>>
 type InanduColumnAggregate = 'sum' | 'avg' | 'min' | 'max' | 'count' | ''
@@ -86,10 +95,15 @@ function parsePastedBoolean(raw: string, options?: InanduPasteOptions | undefine
 function parsePastedCell(raw: string, type: InanduColumnType, options?: InanduPasteOptions | undefined): { value: unknown; } | undefined
 function parsePastedCellValue(raw: string, type: InanduColumnType, options?: InanduPasteOptions | undefined): unknown
 function parsePastedDate(raw: string, locale?: string | undefined): Date | undefined
+function parseServerResponse(body: unknown): {
+  data: InanduGridRow[]
+  total: number
+}
 interface PdfTextMeasurer
   getTextWidth: (text: string) => number
 function placeColumnsByOrder<C extends { order(): number | undefined; }>(columns: readonly C[]): C[]
 function printHtmlDocument(html: string, options?: { autoPrint?: boolean; } | undefined): void
+function readSavedGridState(key: string, parts: readonly InanduGridStatePart[], storage?: GridStateStorage | undefined): Partial<InanduGridSavedState>
 const ROW_DRAG_COLUMN_WIDTH: 32
 function sanitizeGridState(value: unknown, parts?: readonly InanduGridStatePart[] | undefined): Partial<InanduGridSavedState>
 const SELECT_COLUMN_WIDTH: 36
@@ -100,5 +114,6 @@ interface TreeVisibleRow
   expanded: boolean
   row: T
 function truncatePdfText(doc: PdfTextMeasurer, text: string, maxWidth: number): string
+function writeSavedGridState(key: string, state: Partial<InanduGridSavedState>, parts: readonly InanduGridStatePart[], storage?: GridStateStorage | undefined): void
 const zh: <type of 1027 chars, sha1 be32e97744b9>
 function zonedDateParts(date: Date, timeZone?: string | undefined): DateParts
