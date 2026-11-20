@@ -51,6 +51,11 @@ export type { InanduPasteOptions } from './parse';
 export { escapeAttributeSelectorValue } from './dom';
 export { sanitizeGridState, GRID_STATE_VERSION, ALL_GRID_STATE_PARTS } from './state';
 export type { InanduGridSavedState, InanduGridStatePart } from './state';
+export { readSavedGridState, writeSavedGridState, clearSavedGridState } from './state-storage';
+export type { GridStateStorage } from './state-storage';
+export { createDeleteConfirmation } from './delete-confirmation';
+export type { DeleteConfirmation, DeleteConfirmationOptions } from './delete-confirmation';
+export { parseServerResponse } from './server-response';
 
 export { escapeCsvValue, neutralizeCsvFormula } from './export/csv';
 export type { CsvEscapeOptions } from './export/csv';

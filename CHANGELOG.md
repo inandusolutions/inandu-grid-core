@@ -6,6 +6,14 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+Three pieces of logic that grid-angular, grid-react and grid-vue each wrote on their own, now written once here (additive: nothing existing changes):
+
+- `readSavedGridState(key, parts, storage?)`, `writeSavedGridState(key, state, parts, storage?)` and `clearSavedGridState(key, storage?)`: where and how the state a grid saves under its `stateKey` is kept. `localStorage` by default (any object with `getItem`/`setItem`/`removeItem` fits), a versioned blob, only the chosen parts, and what is read goes through `sanitizeGridState`. None of them throws: with no key, no storage (server rendering), a full or blocked storage, or a corrupt blob, a read gives `{}` and a write or clear does nothing.
+- `createDeleteConfirmation()`: the confirmation step of a row or bulk delete. `run({ confirmDelete, message, ask }, rows, proceed)` goes ahead by the app's own answer (`confirmDelete`, sync or a promise), else by asking `message` (`window.confirm` by default), else at once. A rejection or a throw counts as not confirmed (and is logged); a second call while a promise is pending is ignored; without a window nothing is deleted when only a message could ask.
+- `parseServerResponse(body)`: checks a server reply for the grids' server-side data layers. `data` must be an array and `total`, when present, a finite number of 0 or more; a missing `total` is the number of rows received. Anything else throws an error that says what was wrong.
+
 ## [0.1.5] - 2026-11-19
 
 ### Fixed
